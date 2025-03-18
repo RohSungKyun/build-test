@@ -13,15 +13,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js and pnpm
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: "pnpm"
 
-      - name: Install pnpm
+      - name: Install pnpm manually
         run: |
-          npm install -g pnpm
+          curl -fsSL https://get.pnpm.io/install.sh | sh -
+          export PATH="$HOME/.local/share/pnpm:$PATH"
+          echo "$HOME/.local/share/pnpm" >> $GITHUB_PATH
           pnpm --version
 
       - name: Install dependencies
