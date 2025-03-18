@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js and install pnpm
+      - name: Setup Node.js and pnpm
         uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -21,18 +21,14 @@ jobs:
 
       - name: Install pnpm
         run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-          npm install -g pnpm  # pnpm이 없을 경우 설치
-
-      - name: Verify pnpm installation
-        run: pnpm --version # 설치 확인
+          npm install -g pnpm
+          pnpm --version
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build Next.js app
         run: pnpm run build
 
       - name: Deploy to Vercel
-        run: vercel --prod --token=${{ secrets.VERCEL_ACTION_TOKEN }}
+        run: pnpm dlx vercel deploy --prod --token=${{ secrets.VERCEL_ACTION_TOKEN }}
