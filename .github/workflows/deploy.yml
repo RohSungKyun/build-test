@@ -17,10 +17,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: "pnpm"
+
+      - name: Check if pnpm exists
+        run: |
+          which pnpm || echo "pnpm not found"
 
       - name: Install pnpm manually
         run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
           curl -fsSL https://get.pnpm.io/install.sh | sh -
           export PATH="$HOME/.local/share/pnpm:$PATH"
           echo "$HOME/.local/share/pnpm" >> $GITHUB_PATH
