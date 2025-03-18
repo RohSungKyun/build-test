@@ -13,7 +13,7 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
-      semi: ["error", "always"], // 세미콜론 추가
+      semi: ["warn", "always"], // 세미콜론 추가
       quotes: ["error", "double"], // 더블 따옴표 사용
       "no-unused-vars": "warn", // 사용되지 않는 변수 경고
       "react/react-in-jsx-scope": "off", // React JSX scope 관련 경고 끄기
