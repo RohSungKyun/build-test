@@ -8,41 +8,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    container: pandoc/latex
-
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Install mustache (to update the date)
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
 
-        run: apk add ruby && gem install mustache
+      - name: Install Vercel CLI
+        run: npm install -g vercel
 
-      - name: creates output
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --token=${{ secrets.VERCEL_ACTION_TOKEN }}
 
-        run: sh ./build.sh
+      - name: Build Project
+        run: vercel build --token=${{ secrets.VERCEL_ACTION_TOKEN }}
 
-      - name: Pushes to another repository
-
-        id: push_directory
-
-        uses: cpina/github-action-push-to-another-repository@main
-
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.AUTO_ACTIONS }}
-
-        with:
-          source-directory: "output"
-
-          destination-github-username: RohSungKyun
-
-          destination-repository-name: build-test
-
-          user-email: ${{ secrets.EMAIL }}
-
-          commit-message: ${{ github.event.commits[0].message }}
-
-          target-branch: main
-
-      - name: Test get variable exported by push-to-another-repository
-
-        run: echo $DESTINATION_CLONED_DIRECTORY
+      - name: Deploy to Vercel
+        run: vercel deploy --prod --token=${{ secrets.VERCEL_ACTION_TOKEN }}
